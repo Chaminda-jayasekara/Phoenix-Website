@@ -64,4 +64,14 @@ export const CATEGORIES = [
     submissionLabel: "Submission link",
     submissionHint: "Google Drive link to your poem (PDF or Doc).",
   },
+  {
+    slug: "photography",
+    dbCategory: "photography",
+    label: "Photography",
+    description: "Submit your best shot in one of three photography themes.",
+    ageCategories: ["School open", "University open"],
+    subCategories: ["People and Lifestyle", "Nature and Wildlife", "Mobile Photography"],
+    submissionLabel: "Submission link",
+    submissionHint: "Google Drive link to your photo(s).",
+  },
 ];
