@@ -43,6 +43,18 @@ export default function Home() {
           </Card>
         </Link>
       </div>
+
+      <div className="mt-10 pt-6 border-t border-border">
+        <div className="flex items-center justify-between">
+          <div>
+            <div className="font-bold text-base">Already registered?</div>
+            <div className="text-muted text-[12.5px] mt-1">Enter a competition category as a contestant.</div>
+          </div>
+          <Link href="/categories" className="text-flame2 text-sm font-semibold">
+            Browse categories →
+          </Link>
+        </div>
+      </div>
     </div>
   );
 }

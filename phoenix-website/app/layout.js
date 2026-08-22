@@ -26,6 +26,10 @@ export default function RootLayout({ children }) {
                 University
               </Link>
               <span className="text-border">|</span>
+              <Link href="/categories" className="hover:text-white">
+                Compete
+              </Link>
+              <span className="text-border">|</span>
               <Link href="/admin" className="hover:text-white">
                 Admin
               </Link>
