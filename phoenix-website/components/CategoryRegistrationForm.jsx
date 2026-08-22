@@ -17,8 +17,10 @@ import {
 export default function CategoryRegistrationForm({ category }) {
   const [step, setStep] = useState(1);
   const [form, setForm] = useState({
+    entryType: "individual",
     fullName: "",
     nameWithInitials: "",
+    teamMembers: "",
     contact: "",
     email: "",
     ageCategory: "",
@@ -101,6 +103,8 @@ export default function CategoryRegistrationForm({ category }) {
         name_with_initials: form.nameWithInitials,
         contact: form.contact,
         email: form.email,
+        is_group: category.supportsGroupEntry ? form.entryType === "group" : false,
+        team_members: category.supportsGroupEntry && form.entryType === "group" ? form.teamMembers || null : null,
       });
       if (contestantErr) throw contestantErr;
 
@@ -151,10 +155,38 @@ export default function CategoryRegistrationForm({ category }) {
 
       {step === 1 && (
         <Card>
-          <Field label="Full name" required>
+          {category.supportsGroupEntry && (
+            <Field label="Entry type" required>
+              <div className="flex gap-2">
+                {[
+                  { value: "individual", label: "Individual" },
+                  { value: "group", label: "Group" },
+                ].map((opt) => (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() => update("entryType", opt.value)}
+                    className={`flex-1 text-sm font-semibold py-2.5 rounded-lg border ${
+                      form.entryType === opt.value
+                        ? "bg-ember text-ink border-transparent"
+                        : "bg-surfaceAlt text-muted border-border"
+                    }`}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            </Field>
+          )}
+          <Field label={form.entryType === "group" ? "Group leader name" : "Full name"} required>
             <Input value={form.fullName} onChange={(e) => update("fullName", e.target.value)} />
             {errors.fullName && <ErrorText>{errors.fullName}</ErrorText>}
           </Field>
+          {form.entryType === "group" && (
+            <Field label="Team members" hint="Comma-separated names, optional">
+              <Input value={form.teamMembers} onChange={(e) => update("teamMembers", e.target.value)} placeholder="e.g. Kavindu, Nethmi, Sahan" />
+            </Field>
+          )}
           <Field label="Name with initials" required hint="As it should appear on your certificate">
             <Input value={form.nameWithInitials} onChange={(e) => update("nameWithInitials", e.target.value)} />
             {errors.nameWithInitials && <ErrorText>{errors.nameWithInitials}</ErrorText>}
@@ -243,7 +275,10 @@ export default function CategoryRegistrationForm({ category }) {
       {step === 3 && (
         <Card>
           <div className="text-[13px] text-muted mb-3">Review before submitting</div>
-          <ReviewRow label="Name" value={form.fullName} />
+          <ReviewRow label={form.entryType === "group" ? "Group leader" : "Name"} value={form.fullName} />
+          {form.entryType === "group" && form.teamMembers && (
+            <ReviewRow label="Team members" value={form.teamMembers} />
+          )}
           <ReviewRow label="Age category" value={form.ageCategory} />
           {form.subCategory && <ReviewRow label="Sub-category" value={form.subCategory} />}
           <ReviewRow label="Institution" value={selectedInstitution?.name} />

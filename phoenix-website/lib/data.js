@@ -74,4 +74,16 @@ export const CATEGORIES = [
     submissionLabel: "Submission link",
     submissionHint: "Google Drive link to your photo(s).",
   },
+  {
+    slug: "videography",
+    dbCategory: "videography",
+    label: "Videography",
+    description: "Submit a short film or video edit for the competition — solo or as a group.",
+    ageCategories: ["School open", "University open"],
+    subCategories: ["Short Film", "Video Editing"],
+    supportsGroupEntry: true,
+    submissionLabel: "Submission link",
+    submissionHint: "YouTube, Facebook, or Google Drive link to your video.",
+  },
 ];
+

@@ -25,7 +25,10 @@ export default function AdminContestants({ contestants, categories }) {
           <Card key={c.id} className="p-4">
             <div className="flex items-center justify-between cursor-pointer" onClick={() => setExpanded(expanded === c.id ? null : c.id)}>
               <div>
-                <div className="font-bold text-[14.5px]">{c.full_name}</div>
+                <div className="font-bold text-[14.5px]">
+                  {c.full_name}
+                  {c.is_group && <span className="text-flame2 text-[11px] font-semibold ml-2">GROUP</span>}
+                </div>
                 <div className="text-[11.5px] text-muted mt-0.5">
                   {categoryLabel(c.category, categories)} · {c.age_category}
                   {c.sub_category ? ` · ${c.sub_category}` : ""} · {new Date(c.created_at).toLocaleDateString()}
@@ -36,6 +39,7 @@ export default function AdminContestants({ contestants, categories }) {
             {expanded === c.id && (
               <div className="mt-3.5 border-t border-border pt-3.5">
                 <ReviewRow label="Name with initials" value={c.name_with_initials} />
+                {c.is_group && c.team_members && <ReviewRow label="Team members" value={c.team_members} />}
                 <ReviewRow label="Contact" value={c.contact} />
                 <ReviewRow label="Email" value={c.email} />
                 <ReviewRow label="Institution" value={c.institution_name || "—"} />
