@@ -1,0 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+  background: #101218;
+  color: #eeeff3;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+input:focus,
+select:focus {
+  border-color: #ff5a2e !important;
+}
