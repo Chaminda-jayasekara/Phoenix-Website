@@ -44,5 +44,24 @@ export const CATEGORIES = [
     submissionLabel: "Submission link",
     submissionHint: "Link to your design file(s) — Google Drive, etc.",
   },
+  {
+    slug: "article-writing",
+    dbCategory: "article_writing",
+    label: "Article Writing",
+    description: "Submit a written article on the competition's given theme.",
+    ageCategories: ["Intermediate", "Senior", "University"],
+    subCategories: null,
+    submissionLabel: "Submission link",
+    submissionHint: "Google Drive link to your article (PDF or Doc).",
+  },
+  {
+    slug: "poetry",
+    dbCategory: "poetry",
+    label: "Poetry",
+    description: "Submit an original poem on the competition's given theme.",
+    ageCategories: ["Intermediate", "Senior", "University"],
+    subCategories: null,
+    submissionLabel: "Submission link",
+    submissionHint: "Google Drive link to your poem (PDF or Doc).",
+  },
 ];
-
