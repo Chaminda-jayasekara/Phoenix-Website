@@ -28,3 +28,21 @@ export const GOVT_UNIVERSITIES = [
   "The Open University of Sri Lanka",
   "Other",
 ];
+
+// ---------- Competition categories ----------
+// Each entry drives a /categories/[slug] page via CategoryRegistrationForm.
+// Add a new category here (and its slug to the `category` check constraint
+// in supabase/schema_phase2.sql) rather than writing new form code.
+export const CATEGORIES = [
+  {
+    slug: "graphic-design",
+    dbCategory: "graphic_design",
+    label: "Graphic Design",
+    description: "Design a poster, logo, or digital artwork for the competition brief.",
+    ageCategories: ["Intermediate", "Senior", "University"],
+    subCategories: null,
+    submissionLabel: "Submission link",
+    submissionHint: "Link to your design file(s) — Google Drive, etc.",
+  },
+];
+
