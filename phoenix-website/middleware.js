@@ -1,26 +1,25 @@
 import { NextResponse } from "next/server";
+import { COOKIE_NAME, verifySessionToken } from "@/lib/adminAuth";
 
-// Protects /admin with a simple username/password prompt (HTTP Basic Auth).
-// Good enough for launch; swap for Supabase Auth + a real login page later
-// if you want per-organizer accounts or an audit trail.
-export function middleware(req) {
-  const authHeader = req.headers.get("authorization");
-  const user = process.env.ADMIN_USER;
-  const pass = process.env.ADMIN_PASSWORD;
-
-  if (authHeader) {
-    const encoded = authHeader.split(" ")[1] || "";
-    const decoded = Buffer.from(encoded, "base64").toString();
-    const [u, p] = decoded.split(":");
-    if (u === user && p === pass) {
-      return NextResponse.next();
-    }
+// Protects everything under /admin with a signed session cookie set by
+// app/admin/actions.js#adminLogin. Redirects to /admin/login if the
+// cookie is missing, tampered with, or expired. Plain Next.js — no
+// external auth service, works the same on Vercel or a self-hosted VPS.
+export async function middleware(request) {
+  if (request.nextUrl.pathname.startsWith("/admin/login")) {
+    return NextResponse.next();
   }
 
-  return new NextResponse("Authentication required", {
-    status: 401,
-    headers: { "WWW-Authenticate": 'Basic realm="Phoenix Admin"' },
-  });
+  const token = request.cookies.get(COOKIE_NAME)?.value;
+  const valid = await verifySessionToken(token);
+
+  if (!valid) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/admin/login";
+    return NextResponse.redirect(url);
+  }
+
+  return NextResponse.next();
 }
 
 export const config = {

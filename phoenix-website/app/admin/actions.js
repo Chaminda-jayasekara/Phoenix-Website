@@ -1,7 +1,37 @@
 "use server";
 
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
 import { revalidatePath } from "next/cache";
+import { createSessionToken, COOKIE_NAME, MAX_AGE_SECONDS } from "@/lib/adminAuth";
+
+export async function adminLogin(prevState, formData) {
+  const password = String(formData.get("password") || "");
+
+  if (!process.env.ADMIN_PASSWORD) {
+    return { error: "Server is not configured with an admin password." };
+  }
+  if (password !== process.env.ADMIN_PASSWORD) {
+    return { error: "Incorrect password." };
+  }
+
+  const token = await createSessionToken();
+  cookies().set(COOKIE_NAME, token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    maxAge: MAX_AGE_SECONDS,
+    path: "/",
+  });
+
+  redirect("/admin");
+}
+
+export async function adminLogout() {
+  cookies().delete(COOKIE_NAME);
+  redirect("/admin/login");
+}
 
 export async function upsertCategory(prevState, formData) {
   const id = formData.get("id");
