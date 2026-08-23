@@ -25,6 +25,8 @@ export default function CategoryRegistrationForm({ category }) {
     email: "",
     ageCategory: "",
     subCategory: "",
+    eventType: "",
+    language: "",
     institutionId: "",
     submissionLink: "",
   });
@@ -62,6 +64,10 @@ export default function CategoryRegistrationForm({ category }) {
     else if (!/^\S+@\S+\.\S+$/.test(form.email)) e.email = "Invalid email";
     if (!form.ageCategory) e.ageCategory = "Required";
     if (category.subCategories && !form.subCategory) e.subCategory = "Required";
+    if (category.nestedSubCategories) {
+      if (!form.eventType) e.eventType = "Required";
+      if (form.eventType && !form.language) e.language = "Required";
+    }
     setErrors(e);
     return Object.keys(e).length === 0;
   }
@@ -74,6 +80,7 @@ export default function CategoryRegistrationForm({ category }) {
   }
 
   function validateStep3() {
+    if (category.hasSubmission === false) return true;
     const e = {};
     if (!form.submissionLink) e.submissionLink = "Required";
     else if (!/^https?:\/\//.test(form.submissionLink)) e.submissionLink = "Must be a valid link (https://...)";
@@ -92,12 +99,15 @@ export default function CategoryRegistrationForm({ category }) {
     setSubmitError("");
     try {
       const contestantId = crypto.randomUUID();
+      const finalSubCategory = category.nestedSubCategories
+        ? `${form.eventType} - ${form.language}`
+        : form.subCategory || null;
 
       const { error: contestantErr } = await supabase.from("contestants").insert({
         id: contestantId,
         institution_id: form.institutionId,
         category: category.dbCategory,
-        sub_category: form.subCategory || null,
+        sub_category: finalSubCategory,
         age_category: form.ageCategory,
         full_name: form.fullName,
         name_with_initials: form.nameWithInitials,
@@ -108,11 +118,13 @@ export default function CategoryRegistrationForm({ category }) {
       });
       if (contestantErr) throw contestantErr;
 
-      const { error: submissionErr } = await supabase.from("submissions").insert({
-        contestant_id: contestantId,
-        submission_link: form.submissionLink,
-      });
-      if (submissionErr) throw submissionErr;
+      if (category.hasSubmission !== false) {
+        const { error: submissionErr } = await supabase.from("submissions").insert({
+          contestant_id: contestantId,
+          submission_link: form.submissionLink,
+        });
+        if (submissionErr) throw submissionErr;
+      }
 
       const link = `https://chat.whatsapp.com/PhoenixDemo${category.dbCategory}${contestantId.slice(-6)}`;
       setConfirmData({ id: contestantId, link });
@@ -134,6 +146,11 @@ export default function CategoryRegistrationForm({ category }) {
         <p className="text-muted text-sm mt-1.5">
           {form.fullName} is registered for {category.label}.
         </p>
+        {category.hasSubmission === false && (
+          <p className="text-teal text-[12.5px] mt-1">
+            This category is judged live on competition day — no online submission needed.
+          </p>
+        )}
         <Card className="mt-6 text-left">
           <div className="text-[12px] text-muted mb-1.5">Registration ID</div>
           <div className="text-[13px] font-mono mb-4">{confirmData.id}</div>
@@ -151,7 +168,11 @@ export default function CategoryRegistrationForm({ category }) {
       <h2 className="text-xl font-extrabold mb-1">{category.label}</h2>
       <p className="text-muted text-[12.5px] mb-5">{category.description}</p>
 
-      <EmberProgress step={step} total={3} labels={["Your Details", "Institution", "Submission"]} />
+      <EmberProgress
+        step={step}
+        total={3}
+        labels={category.hasSubmission === false ? ["Your Details", "Institution", "Review"] : ["Your Details", "Institution", "Submission"]}
+      />
 
       {step === 1 && (
         <Card>
@@ -223,6 +244,40 @@ export default function CategoryRegistrationForm({ category }) {
               {errors.subCategory && <ErrorText>{errors.subCategory}</ErrorText>}
             </Field>
           )}
+          {category.nestedSubCategories && (
+            <>
+              <Field label="Event" required>
+                <Select
+                  value={form.eventType}
+                  onChange={(e) => {
+                    update("eventType", e.target.value);
+                    update("language", "");
+                  }}
+                >
+                  <option value="">Select</option>
+                  {Object.keys(category.nestedSubCategories).map((ev) => (
+                    <option key={ev} value={ev}>
+                      {ev}
+                    </option>
+                  ))}
+                </Select>
+                {errors.eventType && <ErrorText>{errors.eventType}</ErrorText>}
+              </Field>
+              {form.eventType && (
+                <Field label="Language" required>
+                  <Select value={form.language} onChange={(e) => update("language", e.target.value)}>
+                    <option value="">Select</option>
+                    {category.nestedSubCategories[form.eventType].map((lang) => (
+                      <option key={lang} value={lang}>
+                        {lang}
+                      </option>
+                    ))}
+                  </Select>
+                  {errors.language && <ErrorText>{errors.language}</ErrorText>}
+                </Field>
+              )}
+            </>
+          )}
           <div className="flex justify-end mt-2">
             <Button onClick={goNext}>Continue</Button>
           </div>
@@ -281,15 +336,20 @@ export default function CategoryRegistrationForm({ category }) {
           )}
           <ReviewRow label="Age category" value={form.ageCategory} />
           {form.subCategory && <ReviewRow label="Sub-category" value={form.subCategory} />}
+          {category.nestedSubCategories && (
+            <ReviewRow label="Event" value={`${form.eventType} — ${form.language}`} />
+          )}
           <ReviewRow label="Institution" value={selectedInstitution?.name} />
           <ReviewRow label="Contact" value={form.contact} />
 
-          <div className="mt-4">
-            <Field label={category.submissionLabel} required hint={category.submissionHint}>
-              <Input value={form.submissionLink} onChange={(e) => update("submissionLink", e.target.value)} placeholder="https://..." />
-              {errors.submissionLink && <ErrorText>{errors.submissionLink}</ErrorText>}
-            </Field>
-          </div>
+          {category.hasSubmission !== false && (
+            <div className="mt-4">
+              <Field label={category.submissionLabel} required hint={category.submissionHint}>
+                <Input value={form.submissionLink} onChange={(e) => update("submissionLink", e.target.value)} placeholder="https://..." />
+                {errors.submissionLink && <ErrorText>{errors.submissionLink}</ErrorText>}
+              </Field>
+            </div>
+          )}
 
           {submitError && <ErrorText>{submitError}</ErrorText>}
           <div className="flex justify-between mt-4">

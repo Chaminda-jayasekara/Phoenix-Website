@@ -85,5 +85,21 @@ export const CATEGORIES = [
     submissionLabel: "Submission link",
     submissionHint: "YouTube, Facebook, or Google Drive link to your video.",
   },
+  {
+    slug: "broadcasting",
+    dbCategory: "broadcasting",
+    label: "Broadcasting",
+    description:
+      "Judged live on competition day — no online submission needed. One participant may enter only one sub-event.",
+    ageCategories: ["Junior", "Intermediate", "Senior", "University"],
+    subCategories: null,
+    nestedSubCategories: {
+      Announcing: ["Sinhala", "English", "Tamil"],
+      Dubbing: ["Sinhala", "English", "Tamil"],
+      "Sport Commentary": ["Sinhala", "English"],
+      "News Editing": ["Sinhala", "English"],
+    },
+    hasSubmission: false,
+  },
 ];
 

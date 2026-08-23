@@ -23,7 +23,7 @@ cp .env.local.example .env.local
 Fill in the Supabase values, and set `ADMIN_USER` / `ADMIN_PASSWORD` to
 whatever you want the organizers to log in with at `/admin`.
 
-## 3. Install and run
+## 3. Install and run locally
 
 ```bash
 npm install
