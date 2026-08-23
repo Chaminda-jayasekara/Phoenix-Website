@@ -3,6 +3,7 @@ import { Card } from "@/components/ui";
 import Countdown from "@/components/Countdown";
 import RulesEmbed from "@/components/RulesEmbed";
 import { getSiteSettings } from "@/lib/categories";
+import PageShell from "@/components/PageShell";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -12,6 +13,7 @@ export default async function Home() {
   const settings = await getSiteSettings();
 
   return (
+    <PageShell>
     <div>
       <div className="text-center mb-6">
         <div className="text-[11px] tracking-[0.2em] text-flame2 font-semibold uppercase mb-2">
@@ -84,5 +86,6 @@ export default async function Home() {
         </div>
       </div>
     </div>
+  </PageShell>
   );
 }

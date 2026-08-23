@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
 import SettingsForm from "@/components/admin/SettingsForm";
 
@@ -11,10 +10,7 @@ export default async function AdminSettingsPage() {
 
   return (
     <div>
-      <Link href="/admin" className="text-muted text-[12.5px]">
-        ← Admin
-      </Link>
-      <h2 className="text-xl font-extrabold mt-3 mb-4">Site Settings</h2>
+      <h2 className="text-xl font-extrabold mb-4">Site Settings</h2>
       <SettingsForm initial={data} />
     </div>
   );

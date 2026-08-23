@@ -8,7 +8,7 @@ export default function AdminLoginPage() {
   const [state, formAction] = useFormState(adminLogin, {});
 
   return (
-    <div className="pt-10 max-w-sm mx-auto">
+    <div className="pt-10 px-5 pb-10 max-w-sm mx-auto">
       <div className="flex justify-center mb-4">
         <PhoenixMark size={40} />
       </div>

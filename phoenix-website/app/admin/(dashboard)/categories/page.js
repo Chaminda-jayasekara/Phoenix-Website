@@ -11,9 +11,6 @@ export default async function AdminCategoriesPage() {
 
   return (
     <div>
-      <Link href="/admin" className="text-muted text-[12.5px]">
-        ← Admin
-      </Link>
       <div className="flex items-center justify-between mt-3 mb-4">
         <h2 className="text-xl font-extrabold">Categories</h2>
         <Link href="/admin/categories/new" className="text-flame2 text-[13px] font-semibold">

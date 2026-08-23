@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { getCategoryBySlug } from "@/lib/categories";
 import CategoryRegistrationForm from "@/components/CategoryRegistrationForm";
+import PageShell from "@/components/PageShell";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -14,5 +15,9 @@ export async function generateMetadata({ params }) {
 export default async function CategoryRegisterPage({ params }) {
   const category = await getCategoryBySlug(params.slug);
   if (!category) notFound();
-  return <CategoryRegistrationForm category={category} />;
+  return (
+    <PageShell>
+      <CategoryRegistrationForm category={category} />
+    </PageShell>
+  );
 }

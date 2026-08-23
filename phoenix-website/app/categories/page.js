@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Card } from "@/components/ui";
 import { getCategories } from "@/lib/categories";
+import PageShell from "@/components/PageShell";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -11,6 +12,7 @@ export default async function CategoriesPage() {
   const categories = await getCategories();
 
   return (
+    <PageShell>
     <div>
       <h1 className="text-[24px] font-extrabold tracking-tight mb-2">Competition Categories</h1>
       <p className="text-muted text-sm mb-6">
@@ -36,5 +38,6 @@ export default async function CategoriesPage() {
         )}
       </div>
     </div>
+  </PageShell>
   );
 }

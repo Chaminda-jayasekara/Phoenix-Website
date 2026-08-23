@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getCategoryBySlug } from "@/lib/categories";
 import RulesEmbed from "@/components/RulesEmbed";
+import PageShell from "@/components/PageShell";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -17,6 +18,7 @@ export default async function CategoryPage({ params }) {
   if (!category) notFound();
 
   return (
+    <PageShell>
     <div>
       <h1 className="text-xl font-extrabold mb-1">{category.label}</h1>
       <p className="text-muted text-[12.5px] mb-6">{category.description}</p>
@@ -38,5 +40,6 @@ export default async function CategoryPage({ params }) {
         </Link>
       </div>
     </div>
+  </PageShell>
   );
 }
