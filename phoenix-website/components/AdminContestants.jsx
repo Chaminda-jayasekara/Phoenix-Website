@@ -1,21 +1,51 @@
 "use client";
 
 import { useState } from "react";
+import * as XLSX from "xlsx";
 import { Card, ReviewRow } from "@/components/ui";
+
+function exportContestants(list, label) {
+  const rows = list.map((c) => ({
+    Name: c.full_name,
+    "Name with Initials": c.name_with_initials,
+    Category: c.category,
+    "Sub-category": c.sub_category || "",
+    "Age category": c.age_category,
+    Contact: c.contact,
+    Email: c.email,
+    Institution: c.institution_name || "",
+    Group: c.is_group ? "Yes" : "No",
+    "Team members": c.team_members || "",
+    "Submission link": c.submission_link || "",
+    "Registered At": new Date(c.created_at).toLocaleString(),
+  }));
+  const ws = XLSX.utils.json_to_sheet(rows);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, label.slice(0, 31));
+  XLSX.writeFile(wb, `phoenix-${label.toLowerCase().replace(/\s+/g, "-")}-${Date.now()}.xlsx`);
+}
 
 export default function AdminContestants({ contestants, categories }) {
   const [filter, setFilter] = useState("all");
   const [expanded, setExpanded] = useState(null);
 
   const filtered = filter === "all" ? contestants : contestants.filter((c) => c.category === filter);
+  const filterLabel = filter === "all" ? "All Contestants" : categoryLabel(filter, categories);
 
   return (
     <div>
-      <div className="flex gap-2 mb-4 flex-wrap">
+      <div className="flex gap-2 mb-4 flex-wrap items-center">
         <FilterPill active={filter === "all"} onClick={() => setFilter("all")} label="All" />
         {categories.map((c) => (
           <FilterPill key={c.dbCategory} active={filter === c.dbCategory} onClick={() => setFilter(c.dbCategory)} label={c.label} />
         ))}
+        <button
+          onClick={() => exportContestants(filtered, filterLabel)}
+          disabled={filtered.length === 0}
+          className="text-[12px] px-3 py-1.5 rounded-full border border-teal text-teal font-semibold ml-auto disabled:opacity-40"
+        >
+          ↓ Export Excel
+        </button>
       </div>
 
       {filtered.length === 0 && <Card className="text-center text-muted text-sm">No entries yet.</Card>}

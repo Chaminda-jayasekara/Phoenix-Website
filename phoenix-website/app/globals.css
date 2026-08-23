@@ -4,7 +4,7 @@
 
 html,
 body {
-  background: #101218;
+  background: #0a0e1a;
   color: #eeeff3;
 }
 
@@ -14,5 +14,5 @@ body {
 
 input:focus,
 select:focus {
-  border-color: #ff5a2e !important;
+  border-color: #1d6fe0 !important;
 }

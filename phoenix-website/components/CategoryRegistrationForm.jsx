@@ -165,7 +165,12 @@ export default function CategoryRegistrationForm({ category }) {
 
   return (
     <div>
-      <h2 className="text-xl font-extrabold mb-1">{category.label}</h2>
+      <div className="flex items-center justify-between mb-1">
+        <h2 className="text-xl font-extrabold">{category.label}</h2>
+        <a href={`/categories/${category.slug}`} className="text-teal text-[12px] font-semibold whitespace-nowrap ml-3">
+          Rules & Regulations →
+        </a>
+      </div>
       <p className="text-muted text-[12.5px] mb-5">{category.description}</p>
 
       <EmberProgress

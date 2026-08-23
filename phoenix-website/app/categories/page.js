@@ -1,10 +1,15 @@
 import Link from "next/link";
 import { Card } from "@/components/ui";
-import { CATEGORIES } from "@/lib/data";
+import { getCategories } from "@/lib/categories";
 
-export const metadata = { title: "Categories — Phoenix" };
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+export const fetchCache = "force-no-store";
+export const metadata = { title: "Categories — PHOENIX'26" };
 
-export default function CategoriesPage() {
+export default async function CategoriesPage() {
+  const categories = await getCategories();
+
   return (
     <div>
       <h1 className="text-[24px] font-extrabold tracking-tight mb-2">Competition Categories</h1>
@@ -13,7 +18,7 @@ export default function CategoriesPage() {
         to select it while registering here.
       </p>
       <div className="flex flex-col gap-4">
-        {CATEGORIES.map((c) => (
+        {categories.map((c) => (
           <Link key={c.slug} href={`/categories/${c.slug}`}>
             <Card className="hover:border-flame1 transition-colors cursor-pointer">
               <div className="flex items-center justify-between">
@@ -26,6 +31,9 @@ export default function CategoriesPage() {
             </Card>
           </Link>
         ))}
+        {categories.length === 0 && (
+          <Card className="text-center text-muted text-sm">No categories published yet.</Card>
+        )}
       </div>
     </div>
   );

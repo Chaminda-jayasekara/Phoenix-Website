@@ -3,8 +3,8 @@ export function PhoenixMark({ size = 28 }) {
     <svg width={size} height={size} viewBox="0 0 48 48" fill="none">
       <defs>
         <linearGradient id="pg" x1="0" y1="48" x2="48" y2="0">
-          <stop offset="0" stopColor="#FF5A2E" />
-          <stop offset="1" stopColor="#FFB627" />
+          <stop offset="0" stopColor="#1D6FE0" />
+          <stop offset="1" stopColor="#7DD3FC" />
         </linearGradient>
       </defs>
       <path

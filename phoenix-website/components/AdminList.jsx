@@ -1,17 +1,50 @@
 "use client";
 
 import { useState } from "react";
+import * as XLSX from "xlsx";
 import { Card, ReviewRow } from "@/components/ui";
+
+function exportInstitutions(list, label) {
+  const rows = list.map((inst) => {
+    const bearers = inst.office_bearers || [];
+    const get = (role) => bearers.find((b) => b.role === role);
+    return {
+      Name: inst.name,
+      Type: inst.type,
+      Province: inst.province || "",
+      District: inst.district || "",
+      Email: inst.email,
+      Contact: inst.contact || "",
+      Address: inst.address,
+      "Postal Code": inst.postal_code,
+      "MIC Name": get("mic")?.name || "",
+      "MIC Contact": get("mic")?.contact || "",
+      "MIC Email": get("mic")?.email || "",
+      "President Name": get("president")?.name || "",
+      "President Contact": get("president")?.contact || "",
+      "President Email": get("president")?.email || "",
+      "Secretary Name": get("secretary")?.name || "",
+      "Secretary Contact": get("secretary")?.contact || "",
+      "Secretary Email": get("secretary")?.email || "",
+      "Registered At": new Date(inst.created_at).toLocaleString(),
+    };
+  });
+  const ws = XLSX.utils.json_to_sheet(rows);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, label.slice(0, 31));
+  XLSX.writeFile(wb, `phoenix-${label.toLowerCase().replace(/\s+/g, "-")}-${Date.now()}.xlsx`);
+}
 
 export default function AdminList({ institutions }) {
   const [filter, setFilter] = useState("all");
   const [expanded, setExpanded] = useState(null);
 
   const filtered = filter === "all" ? institutions : institutions.filter((i) => i.type === filter);
+  const filterLabel = filter === "all" ? "All Institutions" : filter === "school" ? "Schools" : "Universities";
 
   return (
     <div>
-      <div className="flex gap-2 mb-4">
+      <div className="flex gap-2 mb-4 items-center flex-wrap">
         {["all", "school", "university"].map((f) => (
           <button
             key={f}
@@ -23,6 +56,13 @@ export default function AdminList({ institutions }) {
             {f === "all" ? "All" : f === "school" ? "Schools" : "Universities"}
           </button>
         ))}
+        <button
+          onClick={() => exportInstitutions(filtered, filterLabel)}
+          disabled={filtered.length === 0}
+          className="text-[12px] px-3 py-1.5 rounded-full border border-teal text-teal font-semibold ml-auto disabled:opacity-40"
+        >
+          ↓ Export Excel
+        </button>
       </div>
 
       {filtered.length === 0 && (

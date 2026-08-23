@@ -1,6 +1,6 @@
+import Link from "next/link";
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
 import AdminTabs from "@/components/AdminTabs";
-import { CATEGORIES } from "@/lib/data";
 
 // Always fetch fresh data — this page must never be statically cached
 // or served from Next.js's fetch cache, since it shows live registrations.
@@ -57,11 +57,24 @@ export default async function AdminPage() {
     }));
   }
 
+  const { data: categoriesData } = await supabaseAdmin.from("categories").select("*").order("sort_order");
+  const categories = (categoriesData || []).map((c) => ({ dbCategory: c.slug, label: c.label }));
+
   return (
     <div>
-      <h2 className="text-xl font-extrabold mb-1">Admin</h2>
-      <p className="text-muted text-[12.5px] mb-5">All registrations across Phoenix.</p>
-      <AdminTabs institutions={mergedInstitutions} contestants={mergedContestants} categories={CATEGORIES} />
+      <div className="flex items-center justify-between mb-1">
+        <h2 className="text-xl font-extrabold">Admin</h2>
+        <div className="flex gap-3 text-[12.5px]">
+          <Link href="/admin/categories" className="text-teal font-semibold">
+            Categories
+          </Link>
+          <Link href="/admin/settings" className="text-teal font-semibold">
+            Settings
+          </Link>
+        </div>
+      </div>
+      <p className="text-muted text-[12.5px] mb-5">All registrations across PHOENIX&apos;26.</p>
+      <AdminTabs institutions={mergedInstitutions} contestants={mergedContestants} categories={categories} />
     </div>
   );
 }
