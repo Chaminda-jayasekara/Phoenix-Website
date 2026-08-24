@@ -5,12 +5,16 @@
 html,
 body {
   background-color: #0a0e1a;
-  background-image: radial-gradient(ellipse 900px 550px at 50% -8%, rgba(29, 111, 224, 0.38), transparent 60%),
-    radial-gradient(ellipse 700px 500px at 95% 25%, rgba(125, 211, 252, 0.13), transparent 60%),
-    radial-gradient(ellipse 800px 600px at 5% 75%, rgba(29, 111, 224, 0.16), transparent 60%),
-    radial-gradient(ellipse 600px 400px at 90% 95%, rgba(125, 211, 252, 0.08), transparent 60%);
-  background-attachment: fixed;
+  background-image: radial-gradient(ellipse 900px 550px at 50% -8%, rgba(29, 111, 224, 0.42), transparent 60%),
+    radial-gradient(ellipse 700px 500px at 95% 25%, rgba(125, 211, 252, 0.16), transparent 60%),
+    radial-gradient(ellipse 800px 600px at 5% 75%, rgba(29, 111, 224, 0.2), transparent 60%),
+    radial-gradient(ellipse 600px 400px at 90% 95%, rgba(125, 211, 252, 0.1), transparent 60%),
+    radial-gradient(ellipse 1500px 1000px at 50% 40%, transparent 35%, rgba(5, 7, 14, 0.6) 100%),
+    url("/phoenix-watermark.png");
+  background-size: auto, auto, auto, auto, auto, 1000px auto;
+  background-position: center, center, center, center, center, center 40px;
   background-repeat: no-repeat;
+  background-attachment: fixed;
   color: #eeeff3;
 }
 
