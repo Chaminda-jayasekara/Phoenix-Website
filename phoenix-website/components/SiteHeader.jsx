@@ -19,15 +19,15 @@ export default function SiteHeader() {
       style={{
         backgroundColor: "rgba(7,9,17,0.82)",
         backgroundImage:
-          "linear-gradient(90deg, rgba(31, 38, 48, 0.22) 0%, rgba(125,211,252,0.09) 50%, rgba(10, 36, 71, 0.22) 100%)",
+          "linear-gradient(90deg, rgba(4, 19, 39, 0.22) 0%, rgba(12, 69, 97, 0.09) 50%, rgba(29,111,224,0.22) 100%)",
         borderBottom: "1px solid rgba(125,211,252,0.18)",
-        boxShadow: "0 1px 24px rgba(4, 13, 26, 0.18)",
+        boxShadow: "0 1px 24px rgba(29,111,224,0.18)",
       }}
     >
       <div className="px-5 py-3 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2" onClick={() => setOpen(false)}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/phoenix-mark.png" alt="Phoenix'26" className="h-9 w-auto" />
+          <img src="/phoenix-full.png" alt="Phoenix'26" className="h-12 w-auto" />
           <span className="font-extrabold text-[17px] tracking-wide">
             PHOENIX<span className="text-flame2">&apos;26</span>
           </span>
