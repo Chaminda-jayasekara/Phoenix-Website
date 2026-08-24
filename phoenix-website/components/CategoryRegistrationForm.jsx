@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import {
-  PhoenixMark,
   EmberProgress,
   Field,
   Input,
@@ -140,7 +139,8 @@ export default function CategoryRegistrationForm({ category }) {
     return (
       <div className="text-center pt-10">
         <div className="flex justify-center mb-4">
-          <PhoenixMark size={48} />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/phoenix-mark.png" alt="Phoenix'26" className="h-16 w-auto" />
         </div>
         <h2 className="text-[22px] font-extrabold">Entry submitted!</h2>
         <p className="text-muted text-sm mt-1.5">

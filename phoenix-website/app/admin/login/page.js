@@ -2,7 +2,7 @@
 
 import { useFormState } from "react-dom";
 import { adminLogin } from "@/app/admin/actions";
-import { PhoenixMark, Field, Input, Button, Card, ErrorText } from "@/components/ui";
+import { Field, Input, Button, Card, ErrorText } from "@/components/ui";
 
 export default function AdminLoginPage() {
   const [state, formAction] = useFormState(adminLogin, {});
@@ -10,7 +10,8 @@ export default function AdminLoginPage() {
   return (
     <div className="pt-10 px-5 pb-10 max-w-sm mx-auto">
       <div className="flex justify-center mb-4">
-        <PhoenixMark size={40} />
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/phoenix-mark.png" alt="Phoenix'26" className="h-14 w-auto" />
       </div>
       <h1 className="text-xl font-extrabold text-center mb-6">Admin Login</h1>
       <Card>

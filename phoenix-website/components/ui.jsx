@@ -1,20 +1,3 @@
-export function PhoenixMark({ size = 28 }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 48 48" fill="none">
-      <defs>
-        <linearGradient id="pg" x1="0" y1="48" x2="48" y2="0">
-          <stop offset="0" stopColor="#1D6FE0" />
-          <stop offset="1" stopColor="#7DD3FC" />
-        </linearGradient>
-      </defs>
-      <path
-        d="M24 4c3 6 1 9-2 12-4 4-8 8-8 15 0 7 6 13 10 13s10-6 10-13c0-3-1-5-2-7 3 2 5 5 5 9 0 9-7 16-13 16S11 40 11 31c0-11 8-16 13-22 1-2 0-3-2-3-2 0-4 1-6 3 1-4 4-5 8-5z"
-        fill="url(#pg)"
-      />
-    </svg>
-  );
-}
-
 export function EmberProgress({ step, total, labels }) {
   return (
     <div className="flex items-center w-full mb-8">

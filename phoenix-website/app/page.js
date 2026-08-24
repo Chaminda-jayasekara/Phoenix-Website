@@ -16,6 +16,15 @@ export default async function Home() {
     <PageShell>
     <div>
       <div className="text-center mb-6">
+        <div className="flex justify-center mb-1">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/phoenix-full.png"
+            alt="Phoenix'26"
+            className="h-48 w-auto"
+            style={{ filter: "drop-shadow(0 0 28px rgba(29,111,224,0.55)) drop-shadow(0 0 10px rgba(125,211,252,0.35))" }}
+          />
+        </div>
         <div className="text-[11px] tracking-[0.2em] text-flame2 font-semibold uppercase mb-2">
           Rising From The Ashes
         </div>
