@@ -14,7 +14,16 @@ export default function SiteHeader() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="border-b border-border sticky top-0 bg-ink/95 backdrop-blur z-20">
+    <header
+      className="sticky top-0 backdrop-blur z-20"
+      style={{
+        backgroundColor: "rgba(7,9,17,0.82)",
+        backgroundImage:
+          "linear-gradient(90deg, rgba(31, 38, 48, 0.22) 0%, rgba(125,211,252,0.09) 50%, rgba(10, 36, 71, 0.22) 100%)",
+        borderBottom: "1px solid rgba(125,211,252,0.18)",
+        boxShadow: "0 1px 24px rgba(4, 13, 26, 0.18)",
+      }}
+    >
       <div className="px-5 py-3 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2" onClick={() => setOpen(false)}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
