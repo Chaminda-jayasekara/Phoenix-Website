@@ -107,7 +107,7 @@ export async function deleteCategory(id) {
 export async function updateSiteSettings(prevState, formData) {
   const eventDateRaw = formData.get("eventDate");
   const payload = {
-    event_date: eventDateRaw ? new Date(eventDateRaw).toISOString() : null,
+    event_date: eventDateRaw ? sriLankaLocalToUtcIso(eventDateRaw) : null,
     hero_description: String(formData.get("heroDescription") || ""),
     general_rules_video_url: String(formData.get("generalRulesVideoUrl") || ""),
     general_rules_pdf_url: String(formData.get("generalRulesPdfUrl") || ""),
@@ -119,4 +119,19 @@ export async function updateSiteSettings(prevState, formData) {
   revalidatePath("/");
   revalidatePath("/admin/settings");
   return { success: true };
+}
+
+// The event happens in Sri Lanka, so the date/time picked in the admin
+// Settings page is always treated as Sri Lanka time (UTC+5:30) — not
+// whatever timezone the server happens to run in (Vercel runs in UTC).
+// Without this, a date meant as "9:00 AM Sri Lanka time" could get
+// stored as "9:00 AM UTC", which is a different moment entirely and
+// can make the countdown think the event already happened.
+function sriLankaLocalToUtcIso(localDateTimeStr) {
+  const [datePart, timePart] = localDateTimeStr.split("T");
+  const [year, month, day] = datePart.split("-").map(Number);
+  const [hour, minute] = (timePart || "00:00").split(":").map(Number);
+  const SRI_LANKA_OFFSET_MINUTES = 5 * 60 + 30;
+  const utcMs = Date.UTC(year, month - 1, day, hour, minute) - SRI_LANKA_OFFSET_MINUTES * 60 * 1000;
+  return new Date(utcMs).toISOString();
 }

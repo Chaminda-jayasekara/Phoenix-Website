@@ -9,11 +9,11 @@ const textareaClass =
 
 export default function SettingsForm({ initial }) {
   const [state, formAction] = useFormState(updateSiteSettings, {});
-  const eventDateValue = initial?.event_date ? toLocalInputValue(initial.event_date) : "";
+  const eventDateValue = initial?.event_date ? toSriLankaLocalInputValue(initial.event_date) : "";
 
   return (
     <form action={formAction} className="flex flex-col gap-1">
-      <Field label="Event date & time" hint="The homepage countdown counts down to this moment">
+      <Field label="Event date & time" hint="Sri Lanka time (UTC+5:30) — the homepage countdown counts down to this moment">
         <Input type="datetime-local" name="eventDate" defaultValue={eventDateValue} />
       </Field>
       <Field label="Homepage description">
@@ -35,8 +35,17 @@ export default function SettingsForm({ initial }) {
   );
 }
 
-function toLocalInputValue(isoString) {
-  const d = new Date(isoString);
+// Converts a stored UTC ISO string back to what should show in the
+// datetime-local input, expressed in Sri Lanka time — the mirror image
+// of sriLankaLocalToUtcIso() in app/admin/actions.js. Uses the UTC*
+// getters on a manually-shifted timestamp so this is correct no matter
+// what timezone the browser itself is in.
+function toSriLankaLocalInputValue(isoString) {
+  const SRI_LANKA_OFFSET_MINUTES = 5 * 60 + 30;
+  const shiftedMs = new Date(isoString).getTime() + SRI_LANKA_OFFSET_MINUTES * 60 * 1000;
+  const d = new Date(shiftedMs);
   const pad = (n) => String(n).padStart(2, "0");
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  return `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())}T${pad(d.getUTCHours())}:${pad(
+    d.getUTCMinutes()
+  )}`;
 }
