@@ -7,10 +7,10 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        ink: "#0A0E1A",
-        surface: "#111726",
-        surfaceAlt: "#19202F",
-        border: "#252D40",
+        ink: "#070911",
+        surface: "#0F1421",
+        surfaceAlt: "#161C2B",
+        border: "#232A3B",
         muted: "#8A93A8",
         flame1: "#1D6FE0",
         flame2: "#7DD3FC",

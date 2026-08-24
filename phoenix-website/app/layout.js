@@ -11,7 +11,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        <div className="min-h-screen bg-ink text-white flex flex-col">
+        <div className="min-h-screen text-white flex flex-col">
           <SiteHeader />
           <main className="flex-1 w-full">{children}</main>
           <footer className="border-t border-border px-5 py-6 text-center text-muted text-[11px]">
