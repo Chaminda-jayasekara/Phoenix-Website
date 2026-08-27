@@ -25,6 +25,20 @@ export default function SettingsForm({ initial }) {
       <Field label="General rules PDF URL" hint="Direct link, or a Google Drive share link">
         <Input name="generalRulesPdfUrl" defaultValue={initial?.general_rules_pdf_url} />
       </Field>
+      <Field label="School coordinators WhatsApp link" hint="Shown to schools after institution registration">
+        <Input
+          name="schoolWhatsappLink"
+          defaultValue={initial?.school_whatsapp_link}
+          placeholder="https://chat.whatsapp.com/..."
+        />
+      </Field>
+      <Field label="University coordinators WhatsApp link" hint="Shown to universities after institution registration">
+        <Input
+          name="universityWhatsappLink"
+          defaultValue={initial?.university_whatsapp_link}
+          placeholder="https://chat.whatsapp.com/..."
+        />
+      </Field>
 
       {state?.error && <ErrorText>{state.error}</ErrorText>}
       {state?.success && <div className="text-teal text-[12.5px] mt-1">Saved.</div>}

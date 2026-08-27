@@ -85,6 +85,9 @@ export default function CategoryForm({ initial }) {
       <Field label="Rules PDF URL" hint="Direct link, or a Google Drive share link">
         <Input name="rulesPdfUrl" defaultValue={initial?.rules_pdf_url} />
       </Field>
+      <Field label="WhatsApp group link" hint="Real invite link for this category's group chat, shown after a contestant registers">
+        <Input name="whatsappGroupLink" defaultValue={initial?.whatsapp_group_link} placeholder="https://chat.whatsapp.com/..." />
+      </Field>
       <Field label="Sort order" hint="Lower numbers appear first on the categories page">
         <Input name="sortOrder" type="number" defaultValue={initial?.sort_order ?? 0} />
       </Field>

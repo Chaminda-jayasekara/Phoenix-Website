@@ -72,6 +72,7 @@ export async function upsertCategory(prevState, formData) {
     submission_hint: String(formData.get("submissionHint") || ""),
     rules_video_url: String(formData.get("rulesVideoUrl") || ""),
     rules_pdf_url: String(formData.get("rulesPdfUrl") || ""),
+    whatsapp_group_link: String(formData.get("whatsappGroupLink") || ""),
     sort_order: Number(formData.get("sortOrder") || 0),
   };
 
@@ -111,6 +112,8 @@ export async function updateSiteSettings(prevState, formData) {
     hero_description: String(formData.get("heroDescription") || ""),
     general_rules_video_url: String(formData.get("generalRulesVideoUrl") || ""),
     general_rules_pdf_url: String(formData.get("generalRulesPdfUrl") || ""),
+    school_whatsapp_link: String(formData.get("schoolWhatsappLink") || ""),
+    university_whatsapp_link: String(formData.get("universityWhatsappLink") || ""),
   };
 
   const { error } = await supabaseAdmin.from("site_settings").update(payload).eq("id", 1);
