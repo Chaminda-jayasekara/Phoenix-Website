@@ -3,9 +3,11 @@ import { Card } from "@/components/ui";
 import { getCategories } from "@/lib/categories";
 import PageShell from "@/components/PageShell";
 
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
-export const fetchCache = "force-no-store";
+// Cached for 60 seconds, then refreshed on the next request — avoids
+// hitting the database on every single page view under high traffic,
+// while staying close enough to real-time for content that rarely
+// changes mid-minute (categories, rules, settings).
+export const revalidate = 60;
 export const metadata = { title: "Categories — PHOENIX'26" };
 
 export default async function CategoriesPage() {

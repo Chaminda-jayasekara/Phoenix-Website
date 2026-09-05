@@ -5,9 +5,11 @@ import RulesEmbed from "@/components/RulesEmbed";
 import { getSiteSettings } from "@/lib/categories";
 import PageShell from "@/components/PageShell";
 
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
-export const fetchCache = "force-no-store";
+// Cached for 60 seconds, then refreshed on the next request — avoids
+// hitting the database on every single page view under high traffic,
+// while staying close enough to real-time for content that rarely
+// changes mid-minute (categories, rules, settings).
+export const revalidate = 60;
 
 export default async function Home() {
   const settings = await getSiteSettings();
@@ -19,7 +21,7 @@ export default async function Home() {
         <div className="flex justify-center mb-1">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/phoenix-full.png"
+            src="/phoenix-full.webp"
             alt="Phoenix'26"
             className="h-48 w-auto"
             style={{ filter: "drop-shadow(0 0 28px rgba(29,111,224,0.55)) drop-shadow(0 0 10px rgba(125,211,252,0.35))" }}

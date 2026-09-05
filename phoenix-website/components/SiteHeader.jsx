@@ -27,7 +27,7 @@ export default function SiteHeader() {
       <div className="px-5 py-3 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2" onClick={() => setOpen(false)}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/phoenix-full.png" alt="Phoenix'26" className="h-12 w-auto" />
+          <img src="/phoenix-full.webp" alt="Phoenix'26" className="h-12 w-auto" />
           <span className="font-extrabold text-[17px] tracking-wide">
             PHOENIX<span className="text-flame2">&apos;26</span>
           </span>

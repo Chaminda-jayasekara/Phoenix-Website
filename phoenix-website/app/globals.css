@@ -27,7 +27,7 @@ body::before {
   position: fixed;
   inset: 0;
   z-index: -1;
-  background-image: url("/phoenix-full.png");
+  background-image: url("/phoenix-full.webp");
   background-size: 500px auto;
   background-position: center 40px;
   background-repeat: no-repeat;
