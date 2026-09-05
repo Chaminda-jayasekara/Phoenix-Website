@@ -21,6 +21,7 @@ export function mapDbCategory(row) {
     submissionHint: row.submission_hint || "",
     rulesVideoUrl: row.rules_video_url || "",
     rulesPdfUrl: row.rules_pdf_url || "",
+    whatsappGroupLink: row.whatsapp_group_link || "",
     sortOrder: row.sort_order || 0,
   };
 }

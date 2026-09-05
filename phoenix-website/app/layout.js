@@ -17,6 +17,11 @@ export default function RootLayout({ children }) {
           <footer className="border-t border-border px-5 py-6 text-center text-muted text-[11px]">
             Organized by <span className="text-flame2 font-semibold">J&apos;pura Flames</span> — Official Media
             Grid, University of Sri Jayewardenepura
+            <div className="mt-2">
+              <a href="/privacy" className="text-teal hover:underline">
+                Privacy Policy
+              </a>
+            </div>
           </footer>
         </div>
       </body>

@@ -39,3 +39,34 @@ export async function verifySessionToken(token) {
   if (!expires || Date.now() > expires) return false;
   return true;
 }
+
+// ---------- Login attempt rate-limiting ----------
+// A signed cookie tracks failed login attempts so a script can't just
+// hammer the password field. No database needed — the count and
+// window start are encoded right into the (tamper-proof) cookie value.
+export const ATTEMPTS_COOKIE_NAME = "phoenix_admin_attempts";
+const ATTEMPT_WINDOW_MS = 15 * 60 * 1000; // 15 minutes
+export const MAX_ATTEMPTS = 5;
+
+export async function createAttemptToken(count, windowStart) {
+  const payload = `${count}.${windowStart}`;
+  const signature = await hmac(payload, getSecret());
+  return `${payload}.${signature}`;
+}
+
+export async function verifyAttemptToken(token) {
+  if (!token) return { count: 0, windowStart: Date.now() };
+  const parts = token.split(".");
+  if (parts.length !== 3) return { count: 0, windowStart: Date.now() };
+  const [countStr, windowStartStr, signature] = parts;
+  const expected = await hmac(`${countStr}.${windowStartStr}`, getSecret());
+  if (expected !== signature) return { count: 0, windowStart: Date.now() };
+
+  const count = Number(countStr);
+  const windowStart = Number(windowStartStr);
+  if (!windowStart || Date.now() - windowStart > ATTEMPT_WINDOW_MS) {
+    // Window expired — treat as a fresh start.
+    return { count: 0, windowStart: Date.now() };
+  }
+  return { count, windowStart };
+}

@@ -4,7 +4,15 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
 import { revalidatePath } from "next/cache";
-import { createSessionToken, COOKIE_NAME, MAX_AGE_SECONDS } from "@/lib/adminAuth";
+import {
+  createSessionToken,
+  COOKIE_NAME,
+  MAX_AGE_SECONDS,
+  createAttemptToken,
+  verifyAttemptToken,
+  ATTEMPTS_COOKIE_NAME,
+  MAX_ATTEMPTS,
+} from "@/lib/adminAuth";
 
 export async function adminLogin(prevState, formData) {
   const password = String(formData.get("password") || "");
@@ -12,9 +20,35 @@ export async function adminLogin(prevState, formData) {
   if (!process.env.ADMIN_PASSWORD) {
     return { error: "Server is not configured with an admin password." };
   }
-  if (password !== process.env.ADMIN_PASSWORD) {
-    return { error: "Incorrect password." };
+
+  const attemptsCookie = cookies().get(ATTEMPTS_COOKIE_NAME)?.value;
+  const { count, windowStart } = await verifyAttemptToken(attemptsCookie);
+
+  if (count >= MAX_ATTEMPTS) {
+    return { error: "Too many attempts. Please wait about 15 minutes and try again." };
   }
+
+  if (password !== process.env.ADMIN_PASSWORD) {
+    const nextCount = count + 1;
+    const nextToken = await createAttemptToken(nextCount, windowStart);
+    cookies().set(ATTEMPTS_COOKIE_NAME, nextToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 15 * 60,
+      path: "/",
+    });
+    const remaining = MAX_ATTEMPTS - nextCount;
+    return {
+      error:
+        remaining > 0
+          ? `Incorrect password. ${remaining} attempt${remaining === 1 ? "" : "s"} left before a short lockout.`
+          : "Incorrect password. Too many attempts — please wait about 15 minutes.",
+    };
+  }
+
+  // Correct password — clear any attempt count and start a real session.
+  cookies().delete(ATTEMPTS_COOKIE_NAME);
 
   const token = await createSessionToken();
   cookies().set(COOKIE_NAME, token, {

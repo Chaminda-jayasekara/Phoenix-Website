@@ -28,6 +28,9 @@ export default function CategoryRegistrationForm({ category }) {
     language: "",
     institutionId: "",
     submissionLink: "",
+    // Honeypot — see RegistrationForm.jsx for the same pattern.
+    company: "",
+    consent: false,
   });
   const [errors, setErrors] = useState({});
   const [institutions, setInstitutions] = useState([]);
@@ -93,6 +96,12 @@ export default function CategoryRegistrationForm({ category }) {
   }
 
   async function handleSubmit() {
+    if (form.company) {
+      // Honeypot tripped — silently pretend success rather than tipping
+      // off the bot with an error.
+      setConfirmData({ id: "—", link: null });
+      return;
+    }
     if (!validateStep3()) return;
     setSubmitting(true);
     setSubmitError("");
@@ -125,7 +134,7 @@ export default function CategoryRegistrationForm({ category }) {
         if (submissionErr) throw submissionErr;
       }
 
-      const link = `https://chat.whatsapp.com/PhoenixDemo${category.dbCategory}${contestantId.slice(-6)}`;
+      const link = category.whatsappGroupLink || null;
       setConfirmData({ id: contestantId, link });
     } catch (err) {
       console.error(err);
@@ -155,9 +164,15 @@ export default function CategoryRegistrationForm({ category }) {
           <div className="text-[12px] text-muted mb-1.5">Registration ID</div>
           <div className="text-[13px] font-mono mb-4">{confirmData.id}</div>
           <div className="text-[12px] text-muted mb-1.5">WhatsApp group link</div>
-          <a href={confirmData.link} className="text-[13px] text-teal break-all">
-            {confirmData.link}
-          </a>
+          {confirmData.link ? (
+            <a href={confirmData.link} className="text-[13px] text-teal break-all">
+              {confirmData.link}
+            </a>
+          ) : (
+            <div className="text-[13px] text-muted">
+              Not published yet — your category coordinator will share it with you shortly.
+            </div>
+          )}
         </Card>
       </div>
     );
@@ -181,6 +196,16 @@ export default function CategoryRegistrationForm({ category }) {
 
       {step === 1 && (
         <Card>
+          <input
+            type="text"
+            name="company"
+            value={form.company}
+            onChange={(e) => update("company", e.target.value)}
+            autoComplete="off"
+            tabIndex={-1}
+            aria-hidden="true"
+            style={{ position: "absolute", left: "-9999px", width: 1, height: 1, opacity: 0 }}
+          />
           {category.supportsGroupEntry && (
             <Field label="Entry type" required>
               <div className="flex gap-2">
@@ -357,11 +382,27 @@ export default function CategoryRegistrationForm({ category }) {
           )}
 
           {submitError && <ErrorText>{submitError}</ErrorText>}
+          <label className="flex items-start gap-2 mt-4 text-[12.5px] text-muted">
+            <input
+              type="checkbox"
+              checked={form.consent}
+              onChange={(e) => update("consent", e.target.checked)}
+              className="mt-0.5 accent-flame1"
+            />
+            <span>
+              I confirm this information is accurate and agree it may be stored and used for PHOENIX&apos;26
+              registration and coordination purposes. See our{" "}
+              <a href="/privacy" target="_blank" className="text-teal underline">
+                Privacy Policy
+              </a>
+              .
+            </span>
+          </label>
           <div className="flex justify-between mt-4">
             <Button variant="text" onClick={() => setStep(2)}>
               ← Back
             </Button>
-            <Button onClick={handleSubmit} disabled={submitting}>
+            <Button onClick={handleSubmit} disabled={submitting || !form.consent}>
               {submitting ? "Submitting…" : "Submit entry"}
             </Button>
           </div>

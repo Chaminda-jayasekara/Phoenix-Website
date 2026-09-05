@@ -32,10 +32,15 @@ function emptyForm() {
     mic: emptyBearer(),
     president: emptyBearer(),
     secretary: emptyBearer(),
+    // Honeypot: real visitors never see or fill this field. Any
+    // automated script that fills every input on the page will fill
+    // it, which is our signal to silently reject the submission.
+    company: "",
+    consent: false,
   };
 }
 
-export default function RegistrationForm({ type }) {
+export default function RegistrationForm({ type, whatsappLink }) {
   const [step, setStep] = useState(1);
   const [form, setForm] = useState(emptyForm());
   const [errors, setErrors] = useState({});
@@ -85,6 +90,13 @@ export default function RegistrationForm({ type }) {
   }
 
   async function handleSubmit() {
+    // Honeypot check: a real user never fills this field, since it's
+    // never visibly rendered. Silently pretend success rather than
+    // showing an error, so we don't tip off the bot about the block.
+    if (form.company) {
+      setConfirmData({ id: "—", link: null, name: "Registration" });
+      return;
+    }
     setSubmitting(true);
     setSubmitError("");
     try {
@@ -121,11 +133,7 @@ export default function RegistrationForm({ type }) {
       const { error: bearerErr } = await supabase.from("office_bearers").insert(bearerRows);
       if (bearerErr) throw bearerErr;
 
-      // TODO: replace with a real WhatsApp group link (e.g. from a lookup
-      // table per category, or generated via a WhatsApp API integration).
-      const link = `https://chat.whatsapp.com/PhoenixDemo${type === "school" ? "Sch" : "Uni"}${institutionId.slice(
-        -6
-      )}`;
+      const link = whatsappLink || null;
 
       setConfirmData({ id: institutionId, link, name: institutionName });
     } catch (err) {
@@ -149,9 +157,15 @@ export default function RegistrationForm({ type }) {
           <div className="text-[12px] text-muted mb-1.5">Registration ID</div>
           <div className="text-[13px] font-mono mb-4">{confirmData.id}</div>
           <div className="text-[12px] text-muted mb-1.5">WhatsApp group link</div>
-          <a href={confirmData.link} className="text-[13px] text-teal break-all">
-            {confirmData.link}
-          </a>
+          {confirmData.link ? (
+            <a href={confirmData.link} className="text-[13px] text-teal break-all">
+              {confirmData.link}
+            </a>
+          ) : (
+            <div className="text-[13px] text-muted">
+              Not published yet — the Phoenix&apos;26 team will share it with you shortly.
+            </div>
+          )}
         </Card>
       </div>
     );
@@ -167,6 +181,19 @@ export default function RegistrationForm({ type }) {
 
       {step === 1 && (
         <Card>
+          {/* Honeypot — invisible to real users, catches basic bots that
+              fill every field on a page. tabIndex/autoComplete keep it
+              out of the way of keyboard users and password managers. */}
+          <input
+            type="text"
+            name="company"
+            value={form.company}
+            onChange={(e) => updateField("company", e.target.value)}
+            autoComplete="off"
+            tabIndex={-1}
+            aria-hidden="true"
+            style={{ position: "absolute", left: "-9999px", width: 1, height: 1, opacity: 0 }}
+          />
           {type === "school" ? (
             <Field label="School name" required>
               <Input value={form.name} onChange={(e) => updateField("name", e.target.value)} placeholder="e.g. Nalanda College" />
@@ -290,11 +317,27 @@ export default function RegistrationForm({ type }) {
             />
           ))}
           {submitError && <ErrorText>{submitError}</ErrorText>}
+          <label className="flex items-start gap-2 mt-4 text-[12.5px] text-muted">
+            <input
+              type="checkbox"
+              checked={form.consent}
+              onChange={(e) => updateField("consent", e.target.checked)}
+              className="mt-0.5 accent-flame1"
+            />
+            <span>
+              I confirm this information is accurate and agree it may be stored and used for PHOENIX&apos;26
+              registration and coordination purposes. See our{" "}
+              <a href="/privacy" target="_blank" className="text-teal underline">
+                Privacy Policy
+              </a>
+              .
+            </span>
+          </label>
           <div className="flex justify-between mt-5">
             <Button variant="text" onClick={() => setStep(2)}>
               ← Back
             </Button>
-            <Button onClick={handleSubmit} disabled={submitting}>
+            <Button onClick={handleSubmit} disabled={submitting || !form.consent}>
               {submitting ? "Submitting…" : "Submit registration"}
             </Button>
           </div>
